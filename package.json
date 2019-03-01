@@ -1,0 +1,23 @@
+{
+  "name": "giliveapi",
+  "version": "0.0.1",
+  "description": "Gib live api",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PeteGabriel/GibLiveApi.git"
+  },
+  "author": "PedroGabriel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PeteGabriel/GibLiveApi/issues"
+  },
+  "homepage": "https://github.com/PeteGabriel/GibLiveApi#readme",
+  "dependencies": {
+    "koa": "^2.7.0"
+  }
+}
