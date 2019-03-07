@@ -20,7 +20,8 @@
   "homepage": "https://github.com/PeteGabriel/GibLiveApi#readme",
   "dependencies": {
     "koa": "^2.7.0",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "node-cache": "^4.2.0"
   },
   "devDependencies": {
     "@types/koa": "^2.0.48",
