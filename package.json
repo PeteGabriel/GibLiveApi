@@ -5,6 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "build": "npm run build-ts && npm run tslint",
+    "build-ts": "tsc",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch-server": "nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/server.ts"
   },
