@@ -1,5 +1,5 @@
 export interface Cachable<String, T> {
-  del(keys: string[]): boolean;
-  get(key: string): T;
-	set(key: string, obj: T, onRetrieve?: Function): boolean;
+  del(keys: String[]): boolean;
+  get(key: String): T;
+	set(key: String, obj: T, onRetrieve?: Function): boolean;
 }

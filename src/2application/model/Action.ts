@@ -5,11 +5,11 @@ class Action {
   readonly to: string;
   readonly status: string;
 
-  constructor(time: Date, 
-    fligth: string, 
-    operator: string, 
+  constructor(time: Date,
+    fligth: string,
+    operator: string,
     to: string,
-    status: string){
+    status: string) {
       this.time = time;
       this.flight = fligth;
       this.to = to;
