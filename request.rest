@@ -1,14 +1,17 @@
-GET /live HTTP/1.1
+GET / HTTP/1.1
 Host: localhost:3000
 Content-Type: application/json
+
 ###
 
 GET /live/departures HTTP/1.1
 Host: localhost:3000
 Content-Type: application/json
+
 ###
 
 GET /live/arrivals HTTP/1.1
 Host: localhost:3000
 Content-Type: application/json
+
 ###
