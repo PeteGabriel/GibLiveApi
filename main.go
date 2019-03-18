@@ -3,13 +3,14 @@ package main
 import (
 	"./routes"
 	"github.com/go-chi/chi"
+	"log"
 	"net/http"
 )
 
 func main() {
 	r := chi.NewRouter()
 	r.Get("/alive", routes.HandleRootRoute)
-	r.Get("/live/departures", handleDepartures)
-	r.Get("/live/arrivals", handleArrivals)
-	http.ListenAndServe(":3000", r)
+	r.Get("/live/departures", routes.HandleDepartures)
+	r.Get("/live/arrivals", routes.HandleArrivals)
+	log.Fatal(http.ListenAndServe(":3000", r))
 }
