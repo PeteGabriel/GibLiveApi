@@ -5,9 +5,11 @@ import (
 	"github.com/go-chi/chi"
 	"log"
 	"net/http"
+	"./server"
 )
 
 func main() {
+	server := server.NewInstance()
 	r := chi.NewRouter()
 	r.Get("/alive", routes.HandleRootRoute)
 	r.Get("/live/departures", routes.HandleDepartures)
