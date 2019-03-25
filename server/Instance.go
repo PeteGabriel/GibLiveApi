@@ -14,10 +14,10 @@ func NewInstance() *Instance {
 	return s
 }
 
-func (s *Instance) Start() {
+func (s *Instance) Start(handler http.Handler) {
 	// Startup the http Server in a way that
 	// we can gracefully shut it down again
-	s.httpServer = &http.Server{Addr: ":3000", Handler: nil}
+	s.httpServer = &http.Server{Addr: ":3000", Handler: handler}
 	err := s.httpServer.ListenAndServe() //blocks
 
 	if err != http.ErrServerClosed {
