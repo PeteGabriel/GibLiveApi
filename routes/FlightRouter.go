@@ -1,18 +1,26 @@
 package routes
 
 import (
-	"../resources/collection"
+	"../resources"
 	"encoding/json"
 	"net/http"
 )
 
+const collectionMediatype = "application/vnd.collection+json"
+
 func HandleRootRoute(w http.ResponseWriter, r *http.Request) {
-	col := collection.Collection{"0.1", "https://github.com/PeteGabriel/GibLiveApi"}
+
+	col := resources.NewCollection(
+		"0.1",
+		"https://github.com/PeteGabriel/GibLiveApi",
+		[]resources.Item{resources.Item{""}},
+	)
+
 	colJson, err := json.Marshal(col)
 	if err != nil {
 		panic(err)
 	}
-	w.Header().Set("Content-Type", "application/vnd.collection+json")
+	w.Header().Set("Content-Type", collectionMediatype)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(colJson))
 }

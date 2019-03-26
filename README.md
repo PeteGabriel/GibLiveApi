@@ -15,3 +15,7 @@ Connection: close
   "Href": "https://github.com/PeteGabriel/GibLiveApi"
 }
 ```
+
+### GET /live/departures
+
+### GET /live/arrivals
