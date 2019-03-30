@@ -2,6 +2,9 @@ package model
 
 //Departure defines the representation of a certain departure
 type Departure struct {
-	action Action
-	to     string
+	Code     string
+	Operator string
+	Time     string
+	Status   string
+	To       string
 }
