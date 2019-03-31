@@ -6,17 +6,12 @@ import (
 	"net/http"
 )
 
-const collectionMediatype = "application/vnd.collection+json"
+const mediatype = "application/json"
 
 func HandleRootRoute(w http.ResponseWriter, r *http.Request) {
-
-	colJson, err := json.Marshal(nil)
-	if err != nil {
-		panic(err)
-	}
-	w.Header().Set("Content-Type", collectionMediatype)
+	w.Header().Set("Content-Type", mediatype)
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(colJson))
+	w.Write([]byte("{\"version\": 0.1}"))
 }
 
 func HandleDepartures(w http.ResponseWriter, r *http.Request) {
@@ -31,15 +26,17 @@ func HandleDepartures(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	colJson, err := json.Marshal(departure)
+	res, err := json.Marshal(departure)
 	if err != nil {
 		panic(err)
 	}
-	w.Header().Set("Content-Type", collectionMediatype)
+	w.Header().Set("Content-Type", mediatype)
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(colJson))
+	w.Write([]byte(res))
 }
 
 func HandleArrivals(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", mediatype)
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("handleArrivals"))
 }
