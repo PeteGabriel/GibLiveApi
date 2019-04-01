@@ -10,6 +10,7 @@ func main() {
 	server := server.NewInstance()
 	r := chi.NewRouter()
 	r.Get("/alive", routes.HandleRootRoute)
+	r.Get("/alive/flights", routes.HandleAllFlights)
 	r.Get("/live/departures", routes.HandleDepartures)
 	r.Get("/live/arrivals", routes.HandleArrivals)
 
