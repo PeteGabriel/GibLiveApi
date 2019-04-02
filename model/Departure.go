@@ -2,9 +2,9 @@ package model
 
 //Departure defines the representation of a certain departure
 type Departure struct {
-	Code     string
-	Operator string
-	Time     string
-	Status   string
-	To       string
+	Code     string `json:"flight"`
+	Operator string `json:"operator"`
+	Time     string `json:"time"`
+	Status   string `json:"status"`
+	To       string `json:"to"`
 }
