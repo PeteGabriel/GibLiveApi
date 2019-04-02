@@ -1,6 +1,7 @@
 package main
 
 import (
+	"./middleware"
 	"./routes"
 	"./server"
 	"github.com/go-chi/chi"
@@ -9,9 +10,9 @@ import (
 func main() {
 	server := server.NewInstance()
 	r := chi.NewRouter()
-	r.Get("/alive", routes.HandleRootRoute)
-	r.Get("/live/departures", routes.HandleDepartures)
-	r.Get("/live/arrivals", routes.HandleArrivals)
+	r.Get("/alive", middleware.Log(routes.HandleRootRoute))
+	r.Get("/live/departures", middleware.Log(routes.HandleDepartures))
+	r.Get("/live/arrivals", middleware.Log(routes.HandleArrivals))
 
 	server.Start(r)
 }
