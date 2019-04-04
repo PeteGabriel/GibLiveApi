@@ -26,7 +26,7 @@ func HandleDepartures(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	flight := Flight{Date: "Monday 1st of April 2019", Departures: departure}
+	flight := model.Flight{Date: "Monday 1st of April 2019", Departures: departure}
 
 	res, err := json.Marshal(flight)
 	if err != nil {
@@ -43,8 +43,7 @@ func HandleArrivals(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("handleArrivals"))
 }
 
-
-func HandleAllFlights (w http.ResponseWriter, r *http.Request) {
+func HandleAllFlights(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", mediatype)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("handleAllFlights"))

@@ -13,7 +13,7 @@ func main() {
 	r.Get("/alive", middleware.Log(routes.HandleRootRoute))
 	r.Get("/live/departures", middleware.Log(routes.HandleDepartures))
 	r.Get("/live/arrivals", middleware.Log(routes.HandleArrivals))
-	r.Get("/live/arrivals", routes.HandleArrivals)
+	r.Get("/live/arrivals", middleware.log(routes.HandleArrivals))
 
 	server.Start(r)
 }
