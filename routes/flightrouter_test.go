@@ -27,18 +27,9 @@ func TestRoot(t *testing.T) {
 
 	body, _ := ioutil.ReadAll(response.Body)
 	expectedOutcome := fmt.Sprintf(`{
-    "alive":{
-			"method":%s,
-			"uri":%s
-		},
-		"departures":{
-			"method":%s,
-			"uri":%s
-		},
-		"arrivals":{
-			"method":%s,
-			"uri":%s
-		}
+    "alive":{"method":%s,"uri":%s},
+		"departures":{"method":%s,"uri":%s},
+		"arrivals":{"method":%s,"uri":%s}
 	}`, "GET", "/alive", "GET", "/live/departures", "GET", "/live/arrivals")
 
 	assert.Equal(t, 200, response.Code, "OK response is expected")

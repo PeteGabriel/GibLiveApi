@@ -9,6 +9,21 @@ import (
 const mediatype = "application/json"
 
 func HandleRootRoute(w http.ResponseWriter, r *http.Request) {
+	const aliveRoute = "/alive"
+	const departuresRoute = "/live/departures"
+	const arrivalsRoute = "/live/arrivals"
+
+	w.Header().Set("Content-Type", mediatype)
+	w.WriteHeader(http.StatusOK)
+	payload := `{
+		"alive":{"method":%s,"uri":%s},
+		"departures":{"method":%s,"uri":%s},
+		"arrivals":{"method":%s,"uri":%s}
+	}`
+	w.Write([]byte(fmt.Sprintf(payload, "GET", aliveRoute, "GET", departuresRoute, "GET", arrivalsRoute)))
+}
+
+func HandleAliveRoute(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", mediatype)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("{\"version\": 0.1}"))
