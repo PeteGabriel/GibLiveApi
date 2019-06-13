@@ -9,8 +9,8 @@ describe('Crawler Service', () => {
     svc = new Crawler()
   })
 
-  it('Get table of departures for today', () => {
-    const departures = svc.getDeparturesInfo()
+  it('Get table of departures for today', async () => {
+    const departures = await svc.getDeparturesInfo()
     expect(departures).toBe('departures info');
   });
 

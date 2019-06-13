@@ -65,6 +65,18 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/centra@*":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@types/centra/-/centra-2.2.0.tgz#ceb4d966dcd1c5c53023b3ff322db729cea36524"
+  dependencies:
+    "@types/node" "*"
+
+"@types/cheerio@^0.22.11":
+  version "0.22.11"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.11.tgz#61c0facf9636d14ba5f77fc65ed8913aa845d717"
+  dependencies:
+    "@types/node" "*"
+
 "@types/connect@*":
   version "3.4.32"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.32.tgz#aa0e9616b9435ccad02bc52b5b454ffc2c70ba28"
@@ -109,6 +121,13 @@
 "@types/node@^10.12.18":
   version "10.14.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.6.tgz#9cbfcb62c50947217f4d88d4d274cc40c22625a9"
+
+"@types/phin@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@types/phin/-/phin-3.3.0.tgz#4eee5871d1780f35afdcac2e90061428dafa1637"
+  dependencies:
+    "@types/centra" "*"
+    "@types/node" "*"
 
 "@types/range-parser@*":
   version "1.2.3"
@@ -667,6 +686,10 @@ capture-stack-trace@^1.0.0:
 caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
+
+centra@^2.2.1:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/centra/-/centra-2.3.0.tgz#f948f515df19e0254eb870eafe99dc8e6639c0c0"
 
 chalk@^1.1.3:
   version "1.1.3"
@@ -3318,6 +3341,12 @@ path-type@^1.0.0:
 performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
+
+phin@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/phin/-/phin-3.4.0.tgz#479df2ecfbbc2b8a6039852970b8b15a78da5169"
+  dependencies:
+    centra "^2.2.1"
 
 pify@^2.0.0:
   version "2.3.0"

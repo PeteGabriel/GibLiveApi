@@ -23,7 +23,10 @@
     "@nestjs/common": "^6.0.0",
     "@nestjs/core": "^6.0.0",
     "@nestjs/platform-express": "^6.0.0",
+    "@types/cheerio": "^0.22.11",
+    "@types/phin": "^3.3.0",
     "cheerio": "^1.0.0-rc.3",
+    "phin": "^3.4.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3"
