@@ -1,5 +1,6 @@
 import {Test, TestingModule } from '@nestjs/testing';
 import { Crawler } from '../../src/domain/service.crawler';
+import { Departure } from 'dist/domain/model/departure';
 
 describe('Crawler Service', () => {
 
@@ -10,8 +11,9 @@ describe('Crawler Service', () => {
   })
 
   it('Get table of departures for today', async () => {
-    const departures = await svc.getDeparturesInfo()
-    expect(departures).toBe('departures info');
+    const departures: Array<Departure> = await svc.getDeparturesInfo()
+    expect(departures).toBeTruthy();
+    expect(departures.length).toBeGreaterThan(0);
   });
 
 });
