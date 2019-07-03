@@ -3,6 +3,8 @@ import { Departure } from './model/departure'
 import { DailyDeparture } from './model/daily_departure';
 import { WebGateway } from './../3infra/interfaces/web_gateway';
 import WebGatewayImpl from './../3infra/impl/web_gateway_impl';
+import { DailyEvent } from './model/daily_event';
+import { Arrival } from 'dist/domain/model/arrival';
 
 @Injectable()
 export class Crawler {
@@ -16,6 +18,14 @@ export class Crawler {
   private async loadFlightDateHtmlInfo(): Promise<Cheerio> {
     const info = await this.gate.load('.flight-info-tables')
     return info.find('.pt').map((_, t) => t.children[0].data)
+  }
+
+  async getArrivalsInfo(): Promise<Array<DailyEvent<Arrival>>> {
+    await this.gate.setup()
+
+    const dailyEvts = new Array<DailyEvent<Arrival>>()
+    dailyEvts[0] = new DailyEvent({date: new Date().toISOString(), events: []})
+    return dailyEvts
   }
 
   async getDeparturesInfo(): Promise<Array<DailyDeparture>> {

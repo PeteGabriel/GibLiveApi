@@ -16,6 +16,13 @@ export class AppController {
     return JSON.stringify(await this.cService.getDeparturesInfo())
   }
 
+  @Get('/arrivals')
+  @HttpCode(200)
+  @Header('Content-Type', 'application/json')
+  async arrivals(): Promise<string> {
+    return JSON.stringify(await this.cService.getArrivalsInfo())
+  }
+
   @Get('alive')
   @HttpCode(200)
   @Header('Content-Type', 'application/json')
