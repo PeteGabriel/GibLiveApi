@@ -1,21 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import * as cheerio from 'cheerio';
-import * as p from 'phin'
-import { Departure } from './../domain/model/departure'
+import { Departure } from './model/departure'
 import { DailyDeparture } from './model/daily_departure';
+import { WebGateway } from './../3infra/interfaces/web_gateway';
+import WebGatewayImpl from './../3infra/impl/web_gateway_impl';
 
 @Injectable()
 export class Crawler {
 
+  private readonly gate: WebGateway
+
+  constructor(private readonly g: WebGatewayImpl){
+    this.gate = g
+  }
+
+  private async loadFlightDateHtmlInfo(): Promise<Cheerio> {
+    const info = await this.gate.load('.flight-info-tables')
+    return info.find('.pt').map((_, t) => t.children[0].data)
+  }
+
   async getDeparturesInfo(): Promise<Array<DailyDeparture>> {
-    let tmp = null
-    const res = await p('https://www.gibraltarairport.gi/content/live-flight-info')
-    const $ = cheerio.load(res.body)
+    await this.gate.setup()
+    const flightDates = await this.loadFlightDateHtmlInfo()
 
-    const flightDates = $('.flight-info-tables').find('.pt').map((i, t) => t.children[0].data)
-
-    let allTheDepData = $('.tab-departures div').find($('tbody > tr > td')).map((i,e) => e.children[0])
-    allTheDepData = allTheDepData.map((i, e) => {
+    let allTheDepData = await this.gate.load('.tab-departures div')
+    allTheDepData = allTheDepData.find(await this.gate.load('tbody > tr > td'))
+                  .map((i,e) => e.children[0])
+                  .map((i, e) => {
       if (!e.name)
         return e.data
       const parts = e.attribs['src'].split('/')
@@ -28,6 +38,7 @@ export class Crawler {
     for (let index = 0; index < flightDates.length; index++) {
       const departures: Departure[] = new Array<Departure>()
       const date = flightDates[index]
+
       for(let i = 0; i < allTheDepData.length; i+=6){
         let newDep = new Departure({
           time: allTheDepData[i],
@@ -37,8 +48,8 @@ export class Crawler {
           status: allTheDepData[i+4]
         })
         departures.push(newDep)
-
       }
+
       dailyDepartures.push(new DailyDeparture({date, departures}))
     }
 

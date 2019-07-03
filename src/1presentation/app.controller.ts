@@ -1,6 +1,6 @@
 import { Controller, Get, HttpCode, Header } from '@nestjs/common';
-import { AppService } from '../domain/app.service';
-import { Crawler } from '../domain/service.crawler';
+import { AppService } from '../2domain/app.service';
+import { Crawler } from '../2domain/service.crawler';
 
 @Controller('/')
 export class AppController {

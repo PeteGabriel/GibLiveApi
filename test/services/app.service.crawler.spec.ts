@@ -1,14 +1,14 @@
-import {Test, TestingModule } from '@nestjs/testing';
-import { Crawler } from '../../src/domain/service.crawler';
-import { Departure } from 'dist/domain/model/departure';
-import { DailyDeparture } from 'src/domain/model/daily_departure';
+import { Crawler } from '../../src/2domain/service.crawler';
+import { DailyDeparture } from './../../src/2domain/model/daily_departure';
+import WebGatewayImpl from './../../src/3infra/impl/web_gateway_impl';
+import {Cache} from './../../src/3infra/cache/cache'
 
 describe('Crawler Service', () => {
 
   let svc;
 
   beforeAll(() => {
-    svc = new Crawler()
+    svc = new Crawler(new WebGatewayImpl(new Cache()))
   })
 
   it('Get table of departures for today', async () => {
