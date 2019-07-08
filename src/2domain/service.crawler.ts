@@ -4,7 +4,7 @@ import { DailyDeparture } from './model/daily_departure';
 import { WebGateway } from './../3infra/interfaces/web_gateway';
 import WebGatewayImpl from './../3infra/impl/web_gateway_impl';
 import { DailyEvent } from './model/daily_event';
-import { Arrival } from 'dist/domain/model/arrival';
+import { Arrival } from './../2domain/model/arrival';
 
 @Injectable()
 export class Crawler {
@@ -17,14 +17,61 @@ export class Crawler {
 
   private async loadFlightDateHtmlInfo(): Promise<Cheerio> {
     const info = await this.gate.load('.flight-info-tables')
+    console.log(info.html())
     return info.find('.pt').map((_, t) => t.children[0].data)
   }
 
   async getArrivalsInfo(): Promise<Array<DailyEvent<Arrival>>> {
     await this.gate.setup()
 
-    const dailyEvts = new Array<DailyEvent<Arrival>>()
-    dailyEvts[0] = new DailyEvent({date: new Date().toISOString(), events: []})
+    const dailyEvts = new Array<DailyEvent<Arrival>>();
+
+    const flightDates = await this.loadFlightDateHtmlInfo()
+
+    let allTheDepData = await this.gate.load('.tab-arrivals div')
+    allTheDepData = allTheDepData.find(await this.gate.load('tbody'))
+    let tables: any[] = []
+    allTheDepData.each((i, n) => tables.push({ date: flightDates[i], table: n}))
+
+
+    tables.forEach((elem) => {
+      elem.table = elem.table.children.map((i, e) => {
+        if (i.name == 'tr'){
+          return i.childNodes.map(n => {
+            if (n.name == 'td'){
+              if (n.childNodes[0].name == 'img'){
+                const parts = n.childNodes[0].attribs['src'].split('/')
+                const airplaneCia = parts[parts.length-1].split('_')[0]
+                return airplaneCia
+              }else return n.childNodes[0].data
+            }
+          })
+          .filter((e) => e != undefined)
+        }
+        return undefined
+      }).filter((e) => e != undefined)
+    })
+
+
+    for (let index = 0; index < tables.length; index++) {
+      const arrivals: Arrival[] = new Array<Arrival>()
+      const date = flightDates[index]
+
+      tables[index].table.forEach(data => {
+        let newDep = new Arrival({
+          extendedTime: date,
+          time: data[0],
+          code: data[1],
+          operator: data[2],
+          from: data[3],
+          status: data[4]
+        })
+        arrivals.push(newDep)
+      });
+
+      dailyEvts.push(new DailyEvent({date: date, events: arrivals}))
+    }
+
     return dailyEvts
   }
 
