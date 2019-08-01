@@ -17,7 +17,6 @@ export class Crawler {
 
   private async loadFlightDateHtmlInfo(): Promise<Cheerio> {
     const info = await this.gate.load('.flight-info-tables')
-    console.log(info.html())
     return info.find('.pt').map((_, t) => t.children[0].data)
   }
 
@@ -25,33 +24,10 @@ export class Crawler {
     await this.gate.setup()
 
     const dailyEvts = new Array<DailyEvent<Arrival>>();
-
     const flightDates = await this.loadFlightDateHtmlInfo()
 
-    let allTheDepData = await this.gate.load('.tab-arrivals div')
-    allTheDepData = allTheDepData.find(await this.gate.load('tbody'))
-    let tables: any[] = []
-    allTheDepData.each((i, n) => tables.push({ date: flightDates[i], table: n}))
-
-
-    tables.forEach((elem) => {
-      elem.table = elem.table.children.map((i, e) => {
-        if (i.name == 'tr'){
-          return i.childNodes.map(n => {
-            if (n.name == 'td'){
-              if (n.childNodes[0].name == 'img'){
-                const parts = n.childNodes[0].attribs['src'].split('/')
-                const airplaneCia = parts[parts.length-1].split('_')[0]
-                return airplaneCia
-              }else return n.childNodes[0].data
-            }
-          })
-          .filter((e) => e != undefined)
-        }
-        return undefined
-      }).filter((e) => e != undefined)
-    })
-
+    let tables: any[] = await this.extractFlightsByDate(flightDates);
+    this.extractDataFromNodes(tables);
 
     for (let index = 0; index < tables.length; index++) {
       const arrivals: Arrival[] = new Array<Arrival>()
@@ -75,42 +51,64 @@ export class Crawler {
     return dailyEvts
   }
 
-  async getDeparturesInfo(): Promise<Array<DailyDeparture>> {
+  async getDeparturesInfo(): Promise<Array<DailyEvent<Departure>>> {
     await this.gate.setup()
     const flightDates = await this.loadFlightDateHtmlInfo()
 
-    let allTheDepData = await this.gate.load('.tab-departures div')
-    allTheDepData = allTheDepData.find(await this.gate.load('tbody > tr > td'))
-                  .map((i,e) => e.children[0])
-                  .map((i, e) => {
-      if (!e.name)
-        return e.data
-      const parts = e.attribs['src'].split('/')
-      const airplaneCia = parts[parts.length-1].split('_')[0]
-      return airplaneCia
-    })
+    let tables: any[] = await this.extractFlightsByDate(flightDates);
+    this.extractDataFromNodes(tables);
 
-    let dailyDepartures: DailyDeparture[] = new Array<DailyDeparture>()
+    let dailyDepartures: DailyEvent<Departure>[] = new Array<DailyEvent<Departure>>()
 
-    for (let index = 0; index < flightDates.length; index++) {
+    for (let index = 0; index < tables.length; index++) {
       const departures: Departure[] = new Array<Departure>()
       const date = flightDates[index]
 
-      for(let i = 0; i < allTheDepData.length; i+=6){
+      tables[index].table.forEach(data => {
         let newDep = new Departure({
-          time: allTheDepData[i],
-          code: allTheDepData[i+1],
-          operator: allTheDepData[i+2],
-          to: allTheDepData[i+3],
-          status: allTheDepData[i+4]
+          extendedTime: date,
+          time: data[0],
+          code: data[1],
+          operator: data[2],
+          to: data[3],
+          status: data[4]
         })
         departures.push(newDep)
-      }
+      });
 
-      dailyDepartures.push(new DailyDeparture({date, departures}))
+      dailyDepartures.push(new DailyEvent({date, events:departures}))
     }
 
     return dailyDepartures
   }
 
+  private extractDataFromNodes(tables: any[]) {
+    tables.forEach((elem) => {
+      elem.table = elem.table.children.map((i, e) => {
+        if (i.name == 'tr') {
+          return i.childNodes.map(n => {
+            if (n.name == 'td') {
+              if (n.childNodes[0].name == 'img') {
+                const parts = n.childNodes[0].attribs['src'].split('/');
+                const airplaneCia = parts[parts.length - 1].split('_')[0];
+                return airplaneCia;
+              }
+              else
+                return n.childNodes[0].data;
+            }
+          })
+            .filter((e) => e != undefined);
+        }
+        return undefined;
+      }).filter((e) => e != undefined);
+    });
+  }
+
+  private async extractFlightsByDate(flightDates: Cheerio) {
+    let allTheDepData = await this.gate.load('.tab-arrivals div');
+    allTheDepData = allTheDepData.find(await this.gate.load('tbody'));
+    let tables: any[] = [];
+    allTheDepData.each((i, n) => tables.push({ date: flightDates[i], table: n }));
+    return tables;
+  }
 }
