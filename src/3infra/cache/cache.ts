@@ -1,5 +1,5 @@
 import NodeCache = require("node-cache-promise");
-import { Cachable } from "./Cachable";
+import { Cachable } from "./cachable";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
