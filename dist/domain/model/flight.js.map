@@ -1,1 +1,0 @@
-{"version":3,"file":"flight.js","sourceRoot":"","sources":["../../../src/domain/model/flight.ts"],"names":[],"mappings":";;AAGA,MAAa,MAAM;IAKjB,YAAY,KAAK;QACf,IAAI,CAAC,IAAI,GAAG,KAAK,CAAC,IAAI,CAAC;QACvB,IAAI,CAAC,QAAQ,GAAG,KAAK,CAAC,QAAQ,CAAC;QAC/B,IAAI,CAAC,UAAU,GAAG,KAAK,CAAC,UAAU,CAAC;IACrC,CAAC;CACF;AAVD,wBAUC"}
