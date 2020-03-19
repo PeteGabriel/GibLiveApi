@@ -12,7 +12,7 @@ Connection: close
 }
 ```
 
-### GET /live/departures
+### GET /departures
 
 ```
 HTTP/1.1 200 OK
@@ -86,7 +86,7 @@ Connection: close
 ]
 ```
 
-### GET /live/arrivals
+### GET /arrivals
 
 ```
 HTTP/1.1 200 OK
