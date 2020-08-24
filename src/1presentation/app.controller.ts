@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Header } from '@nestjs/common';
+import { Controller, Get, HttpCode, Header, Req, Request } from '@nestjs/common';
 import { AppService } from '../2domain/app.service';
 import { Crawler } from '../2domain/service.crawler';
 
@@ -6,8 +6,25 @@ import { Crawler } from '../2domain/service.crawler';
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly cService: Crawler
+    private readonly cService: Crawler,
     ) {}
+
+  @Get('/')
+  @HttpCode(200)
+  @Header('Content-Type', 'application/json')
+  async root(@Req() request: Request): Promise<string> {
+    const root = {
+      departures: {
+        method: 'GET',
+        url: request.url + 'departures',
+      },
+      arrivals: {
+        method: 'GET',
+        url: request.url + 'arrivals',
+      },
+    }
+    return JSON.stringify(root)
+  }
 
   @Get('/departures')
   @HttpCode(200)
