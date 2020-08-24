@@ -4,6 +4,7 @@ export declare class AppController {
     private readonly appService;
     private readonly cService;
     constructor(appService: AppService, cService: Crawler);
+    root(request: Request): Promise<string>;
     departures(): Promise<string>;
     arrivals(): Promise<string>;
     alive(): string;

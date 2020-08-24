@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -25,6 +28,21 @@ let AppController = class AppController {
         this.appService = appService;
         this.cService = cService;
     }
+    root(request) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const root = {
+                departures: {
+                    method: 'GET',
+                    url: request.url + 'departures',
+                },
+                arrivals: {
+                    method: 'GET',
+                    url: request.url + 'arrivals',
+                },
+            };
+            return JSON.stringify(root);
+        });
+    }
     departures() {
         return __awaiter(this, void 0, void 0, function* () {
             return JSON.stringify(yield this.cService.getDeparturesInfo());
@@ -39,6 +57,15 @@ let AppController = class AppController {
         return this.appService.alive();
     }
 };
+__decorate([
+    common_1.Get('/'),
+    common_1.HttpCode(200),
+    common_1.Header('Content-Type', 'application/json'),
+    __param(0, common_1.Req()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "root", null);
 __decorate([
     common_1.Get('/departures'),
     common_1.HttpCode(200),
