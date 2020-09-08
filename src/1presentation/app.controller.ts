@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Header, Req, Request, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, HttpCode, Header, Req, Request, BadGatewayException, HttpStatus } from '@nestjs/common';
 import { AppService } from '../2domain/app.service';
 import { Crawler } from '../2domain/service.crawler';
 
@@ -34,9 +34,11 @@ export class AppController {
   @HttpCode(200)
   @Header('Content-Type', 'application/json')
   async departures(): Promise<string> {
-    
-    return JSON.stringify(await this.cService.getDeparturesInfo())
-    
+    try{
+      return JSON.stringify(await this.cService.getDeparturesInfo())
+    }catch(e){
+      throw new BadGatewayException();
+    }
   }
 
   @Get('/arrivals')

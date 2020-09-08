@@ -49,7 +49,12 @@ let AppController = class AppController {
     }
     departures() {
         return __awaiter(this, void 0, void 0, function* () {
-            return JSON.stringify(yield this.cService.getDeparturesInfo());
+            try {
+                return JSON.stringify(yield this.cService.getDeparturesInfo());
+            }
+            catch (e) {
+                throw new common_1.BadGatewayException();
+            }
         });
     }
     arrivals() {
