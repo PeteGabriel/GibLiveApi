@@ -22,8 +22,8 @@
     "postinstall": "tsc"
   },
   "dependencies": {
-    "@nestjs/common": "^6.0.0",
-    "@nestjs/core": "^6.0.0",
+    "@nestjs/common": "^7.4.4",
+    "@nestjs/core": "^7.4.4",
     "@nestjs/platform-express": "^6.0.0",
     "@types/cheerio": "^0.22.11",
     "@types/phin": "^3.3.0",
@@ -35,7 +35,7 @@
     "rxjs": "^6.3.3"
   },
   "devDependencies": {
-    "@nestjs/testing": "^6.0.0",
+    "@nestjs/testing": "^7.4.4",
     "@types/express": "^4.16.0",
     "@types/jest": "^23.3.13",
     "@types/node": "^10.12.18",

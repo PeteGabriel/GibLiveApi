@@ -12,4 +12,5 @@ export declare class Crawler {
     getNextFlightInfo(): Promise<DailyEvent<any>>;
     private extractDataFromNodes;
     private extractFlightsByDate;
+    private loadFlightsData;
 }

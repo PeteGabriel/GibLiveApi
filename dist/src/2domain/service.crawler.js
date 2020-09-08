@@ -35,16 +35,10 @@ let Crawler = class Crawler {
     }
     getArrivalsInfo() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.gate.setup();
-            }
-            catch (e) {
-                throw e;
-            }
+            yield this.gate.setup();
             const dailyEvts = new Array();
             const flightDates = yield this.loadFlightDateHtmlInfo();
-            let tables = yield this.extractFlightsByDate(flightDates);
-            this.extractDataFromNodes(tables);
+            let tables = yield this.loadFlightsData();
             for (let index = 0; index < tables.length; index++) {
                 const arrivals = new Array();
                 const date = flightDates[index];
@@ -66,12 +60,7 @@ let Crawler = class Crawler {
     }
     getDeparturesInfo() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.gate.setup();
-            }
-            catch (e) {
-                throw e;
-            }
+            yield this.gate.setup();
             const flightDates = yield this.loadFlightDateHtmlInfo();
             let tables = yield this.extractFlightsByDate(flightDates);
             this.extractDataFromNodes(tables);
@@ -128,6 +117,16 @@ let Crawler = class Crawler {
             allTheDepData = allTheDepData.find(yield this.gate.load('tbody'));
             let tables = [];
             allTheDepData.each((i, n) => tables.push(new FlightTable(flightDates[i], n)));
+            return tables;
+        });
+    }
+    loadFlightsData() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.gate.setup();
+            const dailyEvts = new Array();
+            const flightDates = yield this.loadFlightDateHtmlInfo();
+            let tables = yield this.extractFlightsByDate(flightDates);
+            this.extractDataFromNodes(tables);
             return tables;
         });
     }

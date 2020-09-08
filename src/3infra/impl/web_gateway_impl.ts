@@ -18,8 +18,18 @@ export default class WebGatewayImpl implements WebGateway{
     const key = 'live_flight_info'
     await this.cache.get(key).
       then(async cached => {
-        await p('https://www.gibraltarairport.gi/content/live-flight-info')
+        await p(
+          {
+            'url': 'https://www.gibraltarairport.gi/content/live-flight-info',
+            'core': {
+              timeout: 2000
+            }
+          })
           .then(res => this.$ = cheerio.load(res.body))
+          .catch(err => {
+            if (err)
+              throw new Error("could not connect to Gib airport gateway")
+          })
       })
   }
 

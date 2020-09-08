@@ -14,14 +14,18 @@ export class Crawler {
   constructor(private readonly g: WebGatewayImpl){
     this.gate = g
   }
-
+  
   private async loadFlightDateHtmlInfo(): Promise<Cheerio> {
     const info = await this.gate.load('.flight-info-tables')
     return info.find('.pt').map((_, t) => t.children[0].data)
   }
 
   async getArrivalsInfo(): Promise<Array<DailyEvent<Arrival>>> {
-    await this.gate.setup()
+    try{
+      await this.gate.setup()
+    }catch(e){
+      throw e
+    }
 
     const dailyEvts = new Array<DailyEvent<Arrival>>();
     const flightDates = await this.loadFlightDateHtmlInfo()
@@ -52,9 +56,14 @@ export class Crawler {
   }
 
   async getDeparturesInfo(): Promise<Array<DailyEvent<Departure>>> {
-    await this.gate.setup()
-    const flightDates = await this.loadFlightDateHtmlInfo()
+    try{
+      await this.gate.setup()
+    }catch(e){
+      throw e
+    }
 
+    const flightDates = await this.loadFlightDateHtmlInfo()
+    
     let tables: any[] = await this.extractFlightsByDate(flightDates);
     this.extractDataFromNodes(tables);
 
@@ -80,6 +89,15 @@ export class Crawler {
     }
 
     return dailyDepartures
+  }
+
+  /**
+   * Return info about the next flight (departure or arrival).
+   * The next flight is obtained based on the time of the event.
+   */
+  async getNextFlightInfo(): Promise<DailyEvent<any>> {
+    let nextFlightInfo: DailyEvent<any> = null
+    return nextFlightInfo
   }
 
   private extractDataFromNodes(tables: any[]) {
@@ -108,7 +126,19 @@ export class Crawler {
     let allTheDepData = await this.gate.load('.tab-arrivals div');
     allTheDepData = allTheDepData.find(await this.gate.load('tbody'));
     let tables: any[] = [];
-    allTheDepData.each((i, n) => tables.push({ date: flightDates[i], table: n }));
+    allTheDepData.each((i, n) => tables.push(new FlightTable(flightDates[i], n )));
     return tables;
   }
+
 }
+
+class FlightTable {
+
+  date: CheerioElement;
+  table: any;
+
+  constructor(date: CheerioElement,  table: any){
+    this.date = date;
+    this.table = table;
+  }
+} 
