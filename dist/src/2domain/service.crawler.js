@@ -9,14 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Crawler = void 0;
 const common_1 = require("@nestjs/common");
 const departure_1 = require("./model/departure");
 const web_gateway_impl_1 = require("./../3infra/impl/web_gateway_impl");
@@ -35,16 +37,21 @@ let Crawler = class Crawler {
     }
     getArrivalsInfo() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.gate.setup();
+            try {
+                yield this.gate.setup();
+            }
+            catch (e) {
+                throw e;
+            }
             const dailyEvts = new Array();
             const flightDates = yield this.loadFlightDateHtmlInfo();
-            let tables = yield this.loadFlightsData();
+            let tables = yield this.getArrivalsByDate(flightDates);
+            this.extractDataFromNodes(tables);
             for (let index = 0; index < tables.length; index++) {
                 const arrivals = new Array();
                 const date = flightDates[index];
                 tables[index].table.forEach(data => {
                     let newDep = new arrival_1.Arrival({
-                        extendedTime: date,
                         time: data[0],
                         code: data[1],
                         operator: data[2],
@@ -60,9 +67,14 @@ let Crawler = class Crawler {
     }
     getDeparturesInfo() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.gate.setup();
+            try {
+                yield this.gate.setup();
+            }
+            catch (e) {
+                throw e;
+            }
             const flightDates = yield this.loadFlightDateHtmlInfo();
-            let tables = yield this.extractFlightsByDate(flightDates);
+            let tables = yield this.getDeparturesByDate(flightDates);
             this.extractDataFromNodes(tables);
             let dailyDepartures = new Array();
             for (let index = 0; index < tables.length; index++) {
@@ -70,7 +82,6 @@ let Crawler = class Crawler {
                 const date = flightDates[index];
                 tables[index].table.forEach(data => {
                     let newDep = new departure_1.Departure({
-                        extendedTime: date,
                         time: data[0],
                         code: data[1],
                         operator: data[2],
@@ -86,6 +97,10 @@ let Crawler = class Crawler {
     }
     getNextFlightInfo() {
         return __awaiter(this, void 0, void 0, function* () {
+            let departures = yield this.getDeparturesInfo();
+            let arrivals = yield this.getArrivalsInfo();
+            console.log(departures[0]);
+            console.log(arrivals[0]);
             let nextFlightInfo = null;
             return nextFlightInfo;
         });
@@ -97,12 +112,11 @@ let Crawler = class Crawler {
                     return i.childNodes.map(n => {
                         if (n.name == 'td') {
                             if (n.childNodes[0].name == 'img') {
-                                const parts = n.childNodes[0].attribs['src'].split('/');
-                                const airplaneCia = parts[parts.length - 1].split('_')[0];
-                                return airplaneCia;
+                                return this.extractAirplaneCia(n);
                             }
-                            else
+                            else {
                                 return n.childNodes[0].data;
+                            }
                         }
                     })
                         .filter((e) => e != undefined);
@@ -111,7 +125,12 @@ let Crawler = class Crawler {
             }).filter((e) => e != undefined);
         });
     }
-    extractFlightsByDate(flightDates) {
+    extractAirplaneCia(n) {
+        const parts = n.childNodes[0].attribs['src'].split('/');
+        const airplaneCia = parts[parts.length - 1].split('_')[0];
+        return airplaneCia;
+    }
+    getArrivalsByDate(flightDates) {
         return __awaiter(this, void 0, void 0, function* () {
             let allTheDepData = yield this.gate.load('.tab-arrivals div');
             allTheDepData = allTheDepData.find(yield this.gate.load('tbody'));
@@ -120,13 +139,12 @@ let Crawler = class Crawler {
             return tables;
         });
     }
-    loadFlightsData() {
+    getDeparturesByDate(flightDates) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.gate.setup();
-            const dailyEvts = new Array();
-            const flightDates = yield this.loadFlightDateHtmlInfo();
-            let tables = yield this.extractFlightsByDate(flightDates);
-            this.extractDataFromNodes(tables);
+            let allTheDepData = yield this.gate.load('.tab-departures div');
+            allTheDepData = allTheDepData.find(yield this.gate.load('tbody'));
+            let tables = [];
+            allTheDepData.each((i, n) => tables.push(new FlightTable(flightDates[i], n)));
             return tables;
         });
     }

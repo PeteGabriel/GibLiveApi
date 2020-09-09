@@ -3,7 +3,7 @@ import { DailyEvent } from './../../src/2domain/model/daily_event';
 import { Arrival } from './../../src/2domain/model/arrival';
 import WebGatewayImpl from './../../src/3infra/impl/web_gateway_impl';
 import {Cache} from './../../src/3infra/cache/cache'
-import { Departure } from 'src/2domain/model/departure';
+import { Departure } from '../../src/2domain/model/departure';
 
 describe('Crawler Service', () => {
 
