@@ -1,4 +1,5 @@
-export declare class Departure {
+import { Event } from "./event";
+export declare class Departure extends Event {
     code: string;
     operator: string;
     time: string;

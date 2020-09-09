@@ -1,4 +1,6 @@
-export class Arrival {
+import { Event } from "./event";
+
+export class Arrival extends Event{
   code: string;
   operator: string;
   time: string;
@@ -6,37 +8,13 @@ export class Arrival {
   from: string;
 
   constructor(params) {
+    super()
     this.code = params.code;
     this.operator = params.operator;
-    this.time = this.formatTime(params.extendedDate, params.time);
+    this.time = this.formatTime(params.time);
     this.status = params.status;
     this.from = params.from;
   }
 
-  private formatTime(extendedDate: string, time: string): string{
-    const date = new Date()
-    date.setHours(this.parseHours(time))
-    date.setMinutes(this.parseMinutes(time))
-    return date.toISOString()
-  }
-
-
-  private parseHours(time: string): number{
-    const parts = time.split(':')
-    let hours = 0
-    if (parts.length > 1){
-      hours = Number.parseInt(parts[0])
-    }
-    return hours
-  }
-
-  private parseMinutes(time: string): number{
-    const parts = time.split(':')
-    let minutes = 0
-    if (parts.length > 1){
-      minutes = Number.parseInt(parts[0])
-    }
-    return minutes
-  }
 
 }

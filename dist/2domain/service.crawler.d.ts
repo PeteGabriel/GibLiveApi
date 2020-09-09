@@ -11,5 +11,7 @@ export declare class Crawler {
     getDeparturesInfo(): Promise<Array<DailyEvent<Departure>>>;
     getNextFlightInfo(): Promise<DailyEvent<any>>;
     private extractDataFromNodes;
-    private extractFlightsByDate;
+    private extractAirplaneCia;
+    private getArrivalsByDate;
+    private getDeparturesByDate;
 }

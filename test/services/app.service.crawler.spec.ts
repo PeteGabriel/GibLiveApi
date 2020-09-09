@@ -1,5 +1,4 @@
 import { Crawler } from '../../src/2domain/service.crawler';
-import { DailyDeparture } from './../../src/2domain/model/daily_departure';
 import { DailyEvent } from './../../src/2domain/model/daily_event';
 import { Arrival } from './../../src/2domain/model/arrival';
 import WebGatewayImpl from './../../src/3infra/impl/web_gateway_impl';
