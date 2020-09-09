@@ -9,6 +9,9 @@ export abstract class Event {
 
 
   private parseHours(time: string): number{
+    if (time =="" || time == undefined){
+      return -1
+    }
     const parts = time.split(':')
     let hours = 0
     if (parts.length > 1){
@@ -18,6 +21,9 @@ export abstract class Event {
   }
 
   private parseMinutes(time: string): number{
+    if (time =="" || time == undefined){
+      return -1
+    }
     const parts = time.split(':')
     let minutes = 0
     if (parts.length > 1){
