@@ -4,6 +4,8 @@ import { WebGateway } from './../3infra/interfaces/web_gateway';
 import WebGatewayImpl from './../3infra/impl/web_gateway_impl';
 import { DailyEvent } from './model/daily_event';
 import { Arrival } from './../2domain/model/arrival';
+import { EventComparator } from './impl/event_comparator';
+import { Event } from './model/event';
 
 @Injectable()
 export class Crawler {
@@ -87,23 +89,42 @@ export class Crawler {
     return dailyDepartures
   }
 
+
   /**
    * Return info about the next flight (departure or arrival).
    * The next flight is obtained based on the time of the event.
+   * 
+   * If today's flights have already departed or arrived, this method returns the 
+   * next arrival or departure (whichever is the earliest to happen).
    */
-  async getNextFlightInfo(): Promise<DailyEvent<any>> {
-    let departures = await this.getDeparturesInfo();
-    let arrivals = await this.getArrivalsInfo();
-    
-    console.log(departures[0])
-    console.log(arrivals[0])
+  async getNextFlight(arrivals: Array<DailyEvent<Arrival>>, 
+    departures: Array<DailyEvent<Departure>>): Promise<Event> {
 
-    let nextFlightInfo: DailyEvent<any> = null
-    
+      if (departures.length == 0 && arrivals.length == 0){
+        return null
+      }
+      
+      for(let i=0; i <= (departures.length-1); i++){
+        let dailyArival = arrivals[i]
+        let dailyDepartures = departures[i]
 
-    
-    return nextFlightInfo
-  }
+        for(let j=0; j<= (dailyDepartures.events.length-1); j++){
+          let arrivalEvent = dailyArival.events[j]
+          let departuresEvent = dailyDepartures.events[j]
+
+          let comp = new EventComparator();
+          let res = comp.compare(arrivalEvent, departuresEvent)
+          if (res <= 0){
+            return arrivalEvent
+          }else {
+            return departuresEvent
+          }
+        }
+      }
+      return null
+    }
+
+
 
   private extractDataFromNodes(tables: any[]) {
     tables.forEach((elem) => {

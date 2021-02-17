@@ -9,10 +9,12 @@ describe('EventComparator interface implementation', () => {
 
     let a: Arrival = new Arrival({});
     a.time = "2020-09-09T11:11:29.446Z"
+    a.status = ""
     
     let d: Departure = new Departure({})
     d.time= "2020-09-09T15:15:03.515Z"
-    
+    d.status = ""
+
     let comp: Comparator<Arrival, Departure> = new EventComparator()
     let res = comp.compare(a, d)
     expect(res).toBeLessThan(0)
@@ -22,9 +24,11 @@ describe('EventComparator interface implementation', () => {
 
     let a: Arrival = new Arrival({});
     a.time = "2020-09-09T15:15:03.515Z"
+    a.status = ""
     
     let d: Departure = new Departure({})
     d.time= "2020-09-09T11:11:29.446Z"
+    d.status = ""
     
     let comp: Comparator<Arrival, Departure> = new EventComparator()
     let res = comp.compare(a, d)
@@ -35,10 +39,12 @@ describe('EventComparator interface implementation', () => {
 
     let a: Arrival = new Arrival({});
     a.time = "2020-09-09T15:15:03.515Z"
+    a.status = ""
     
     let d: Departure = new Departure({})
     d.time= "2020-09-09T15:15:03.515Z"
-    
+    d.status = ""
+
     let comp: Comparator<Arrival, Departure> = new EventComparator()
     let res = comp.compare(a, d)
     expect(res).toEqual(0)

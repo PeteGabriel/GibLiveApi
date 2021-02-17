@@ -1,6 +1,9 @@
-import { Controller, Get, HttpCode, Header, Req, Request, BadGatewayException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, HttpCode, Header, Req, Request, BadGatewayException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { AppService } from '../2domain/app.service';
 import { Crawler } from '../2domain/service.crawler';
+import { Departure } from '../2domain/model/departure';
+import { DailyEvent } from '../2domain/model/daily_event';
+import { Arrival } from '../2domain/model/arrival';
 
 @Controller('/')
 export class AppController {
@@ -45,7 +48,11 @@ export class AppController {
   @HttpCode(200)
   @Header('Content-Type', 'application/json')
   async arrivals(): Promise<string> {
-    return JSON.stringify(await this.cService.getArrivalsInfo())
+    try{
+      return JSON.stringify(await this.cService.getArrivalsInfo())
+    }catch(e){
+      throw new BadGatewayException();
+    }
   }
 
   @Get('alive')
@@ -59,6 +66,19 @@ export class AppController {
   @HttpCode(200)
   @Header('Content-Type', 'application/json')
   async next(): Promise<string> {
-    return JSON.stringify(await this.cService.getNextFlightInfo())
+    let departures: Array<DailyEvent<Departure>> = null
+    let arrivals: Array<DailyEvent<Arrival>> = null
+    try{
+      departures = await this.cService.getDeparturesInfo();
+      arrivals = await this.cService.getArrivalsInfo();
+    }catch(e){
+      throw new BadGatewayException();
+    }
+
+    const nF = await this.cService.getNextFlight(arrivals, departures)
+    if (nF == null){
+      throw new NotFoundException("No info was found for the next flight")
+    }
+    return JSON.stringify(nF)
   }
 }
