@@ -3,12 +3,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventComparator = void 0;
 class EventComparator {
     compare(a, d) {
-        let aa = Date.parse(a.time);
-        let dd = Date.parse(d.time);
-        console.log(aa);
-        console.log(dd);
-        console.log(aa - dd);
-        return aa - dd;
+        let aa = new Date(a.time);
+        let dd = new Date(d.time);
+        if (aa > dd) {
+            if (a.status.includes("Arrived")) {
+                return -1;
+            }
+            return 1;
+        }
+        else if (aa < dd) {
+            if (d.status.includes("Departed")) {
+                return 1;
+            }
+            return -1;
+        }
+        else {
+            return 0;
+        }
     }
 }
 exports.EventComparator = EventComparator;

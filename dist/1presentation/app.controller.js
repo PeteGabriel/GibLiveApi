@@ -61,7 +61,12 @@ let AppController = class AppController {
     }
     arrivals() {
         return __awaiter(this, void 0, void 0, function* () {
-            return JSON.stringify(yield this.cService.getArrivalsInfo());
+            try {
+                return JSON.stringify(yield this.cService.getArrivalsInfo());
+            }
+            catch (e) {
+                throw new common_1.BadGatewayException();
+            }
         });
     }
     alive() {
@@ -69,7 +74,20 @@ let AppController = class AppController {
     }
     next() {
         return __awaiter(this, void 0, void 0, function* () {
-            return JSON.stringify(yield this.cService.getNextFlightInfo());
+            let departures = null;
+            let arrivals = null;
+            try {
+                departures = yield this.cService.getDeparturesInfo();
+                arrivals = yield this.cService.getArrivalsInfo();
+            }
+            catch (e) {
+                throw new common_1.BadGatewayException();
+            }
+            const nF = yield this.cService.getNextFlight(arrivals, departures);
+            if (nF == null) {
+                throw new common_1.NotFoundException("No info was found for the next flight");
+            }
+            return JSON.stringify(nF);
         });
     }
 };

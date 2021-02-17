@@ -9,6 +9,9 @@ class Event {
         return date.toISOString();
     }
     parseHours(time) {
+        if (time == "" || time == undefined) {
+            return -1;
+        }
         const parts = time.split(':');
         let hours = 0;
         if (parts.length > 1) {
@@ -17,6 +20,9 @@ class Event {
         return hours;
     }
     parseMinutes(time) {
+        if (time == "" || time == undefined) {
+            return -1;
+        }
         const parts = time.split(':');
         let minutes = 0;
         if (parts.length > 1) {

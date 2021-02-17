@@ -24,6 +24,7 @@ const departure_1 = require("./model/departure");
 const web_gateway_impl_1 = require("./../3infra/impl/web_gateway_impl");
 const daily_event_1 = require("./model/daily_event");
 const arrival_1 = require("./../2domain/model/arrival");
+const event_comparator_1 = require("./impl/event_comparator");
 let Crawler = class Crawler {
     constructor(g) {
         this.g = g;
@@ -95,14 +96,28 @@ let Crawler = class Crawler {
             return dailyDepartures;
         });
     }
-    getNextFlightInfo() {
+    getNextFlight(arrivals, departures) {
         return __awaiter(this, void 0, void 0, function* () {
-            let departures = yield this.getDeparturesInfo();
-            let arrivals = yield this.getArrivalsInfo();
-            console.log(departures[0]);
-            console.log(arrivals[0]);
-            let nextFlightInfo = null;
-            return nextFlightInfo;
+            if (departures.length == 0 && arrivals.length == 0) {
+                return null;
+            }
+            for (let i = 0; i <= (departures.length - 1); i++) {
+                let dailyArival = arrivals[i];
+                let dailyDepartures = departures[i];
+                for (let j = 0; j <= (dailyDepartures.events.length - 1); j++) {
+                    let arrivalEvent = dailyArival.events[j];
+                    let departuresEvent = dailyDepartures.events[j];
+                    let comp = new event_comparator_1.EventComparator();
+                    let res = comp.compare(arrivalEvent, departuresEvent);
+                    if (res <= 0) {
+                        return arrivalEvent;
+                    }
+                    else {
+                        return departuresEvent;
+                    }
+                }
+            }
+            return null;
         });
     }
     extractDataFromNodes(tables) {
