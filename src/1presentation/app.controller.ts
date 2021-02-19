@@ -14,42 +14,85 @@ export class AppController {
 
   @Get('/')
   @HttpCode(200)
-  @Header('Content-Type', 'application/json')
+  @Header('Content-Type', 'application/vnd.collection+json')
   async root(@Req() request: Request): Promise<string> {
     const root = {
-      departures: {
-        method: 'GET',
-        url: request.url + 'departures',
-      },
-      arrivals: {
-        method: 'GET',
-        url: request.url + 'arrivals',
-      },
-      nextFlight: {
-        method: 'GET',
-        url: request.url + 'next-flight'
+      "collection" :
+      {
+        "version" : "1.0",
+        "href" : "/",
+        "links" : [
+          {"href" : request.url + 'departures', "rel" : "departures", "render" : "link"},
+          {"href" : request.url + 'arrivals', "rel" : "arrivals", "render" : "link"},
+          {"href" : request.url + 'next-flight', "rel" : "next-flight", "render" : "link"}
+        ]
       }
     }
+
     return JSON.stringify(root)
   }
 
   @Get('/departures')
   @HttpCode(200)
-  @Header('Content-Type', 'application/json')
-  async departures(): Promise<string> {
+  @Header('Content-Type', 'application/vnd.collection+json')
+  async departures(@Req() request: Request): Promise<string> {
+
+    const root = {
+      "collection" :
+      {
+        version : "1.0",
+        href : request.url,
+        links : [
+          {"href" : '/arrivals', "rel" : "arrivals", "render" : "link"},
+          {"href" : '/next-flight', "rel" : "next-flight", "render" : "link"}
+        ],
+        items: []
+      }
+    }
+
     try{
-      return JSON.stringify(await this.cService.getDeparturesInfo())
+      const departures = await this.cService.getDeparturesInfo()
+      departures.forEach(element => {
+        root.collection.items.push(
+          {
+            data : [{ name: "departure", value: element }]
+          }
+        )
+      })
+      return JSON.stringify(root)
     }catch(e){
-      throw new BadGatewayException();
+      throw new BadGatewayException()
     }
   }
 
   @Get('/arrivals')
   @HttpCode(200)
-  @Header('Content-Type', 'application/json')
-  async arrivals(): Promise<string> {
+  @Header('Content-Type', 'application/vnd.collection+json')
+  async arrivals(@Req() request: Request): Promise<string> {
+
+    const root = {
+      "collection" :
+      {
+        version : "1.0",
+        href : request.url,
+        links : [
+          {"href" : '/departures', "rel" : "departures", "render" : "link"},
+          {"href" : '/next-flight', "rel" : "next-flight", "render" : "link"}
+        ],
+        items: []
+      }
+    }
+
     try{
-      return JSON.stringify(await this.cService.getArrivalsInfo())
+      const arrivals = await this.cService.getArrivalsInfo()
+      arrivals.forEach(element => {
+        root.collection.items.push(
+          {
+            data : [{ name: "arrival", value: element }]
+          }
+        )
+      })
+      return JSON.stringify(root)
     }catch(e){
       throw new BadGatewayException();
     }
@@ -64,8 +107,8 @@ export class AppController {
 
   @Get('/next-flight')
   @HttpCode(200)
-  @Header('Content-Type', 'application/json')
-  async next(): Promise<string> {
+  @Header('Content-Type', 'application/vnd.collection+json')
+  async next(@Req() request: Request): Promise<string> {   
     let departures: Array<DailyEvent<Departure>> = null
     let arrivals: Array<DailyEvent<Arrival>> = null
     try{
@@ -79,6 +122,24 @@ export class AppController {
     if (nF == null){
       throw new NotFoundException("No info was found for the next flight")
     }
-    return JSON.stringify(nF)
+
+    let getItemName = (flight) => flight.from != undefined ? "arrival" : "departure"
+
+    const root = {
+      "collection" :
+      {
+        version : "1.0",
+        href : request.url,
+        links : [
+          {"href" : '/arrivals', "rel" : "arrivals", "render" : "link"},
+          {"href" : '/departures', "rel" : "departures", "render" : "link"}
+        ],
+        items: [{
+          data : [{ name: getItemName(nF), value: nF }]
+        }]
+      }
+    }
+
+    return JSON.stringify(root)
   }
 }
