@@ -33,36 +33,67 @@ let AppController = class AppController {
     root(request) {
         return __awaiter(this, void 0, void 0, function* () {
             const root = {
-                departures: {
-                    method: 'GET',
-                    url: request.url + 'departures',
-                },
-                arrivals: {
-                    method: 'GET',
-                    url: request.url + 'arrivals',
-                },
-                nextFlight: {
-                    method: 'GET',
-                    url: request.url + 'next-flight'
+                "collection": {
+                    "version": "1.0",
+                    "href": "/",
+                    "links": [
+                        { "href": request.url + 'departures', "rel": "departures", "render": "link" },
+                        { "href": request.url + 'arrivals', "rel": "arrivals", "render": "link" },
+                        { "href": request.url + 'next-flight', "rel": "next-flight", "render": "link" }
+                    ]
                 }
             };
             return JSON.stringify(root);
         });
     }
-    departures() {
+    departures(request) {
         return __awaiter(this, void 0, void 0, function* () {
+            const root = {
+                "collection": {
+                    version: "1.0",
+                    href: request.url,
+                    links: [
+                        { "href": '/arrivals', "rel": "arrivals", "render": "link" },
+                        { "href": '/next-flight', "rel": "next-flight", "render": "link" }
+                    ],
+                    items: []
+                }
+            };
             try {
-                return JSON.stringify(yield this.cService.getDeparturesInfo());
+                const departures = yield this.cService.getDeparturesInfo();
+                departures.forEach(element => {
+                    root.collection.items.push({
+                        data: [{ name: "departure", value: element }]
+                    });
+                });
+                return JSON.stringify(root);
             }
             catch (e) {
                 throw new common_1.BadGatewayException();
             }
         });
     }
-    arrivals() {
+    arrivals(request) {
         return __awaiter(this, void 0, void 0, function* () {
+            const root = {
+                "collection": {
+                    version: "1.0",
+                    href: request.url,
+                    links: [
+                        { "href": '/departures', "rel": "departures", "render": "link" },
+                        { "href": '/next-flight', "rel": "next-flight", "render": "link" }
+                    ],
+                    items: []
+                }
+            };
             try {
-                return JSON.stringify(yield this.cService.getArrivalsInfo());
+                const arrivals = yield this.cService.getArrivalsInfo();
+                arrivals.forEach(element => {
+                    root.collection.items.push({
+                        data: [{ name: "arrival", value: element }]
+                    });
+                });
+                return JSON.stringify(root);
             }
             catch (e) {
                 throw new common_1.BadGatewayException();
@@ -72,7 +103,7 @@ let AppController = class AppController {
     alive() {
         return this.appService.alive();
     }
-    next() {
+    next(request) {
         return __awaiter(this, void 0, void 0, function* () {
             let departures = null;
             let arrivals = null;
@@ -87,14 +118,28 @@ let AppController = class AppController {
             if (nF == null) {
                 throw new common_1.NotFoundException("No info was found for the next flight");
             }
-            return JSON.stringify(nF);
+            let getItemName = (flight) => flight.from != undefined ? "arrival" : "departure";
+            const root = {
+                "collection": {
+                    version: "1.0",
+                    href: request.url,
+                    links: [
+                        { "href": '/arrivals', "rel": "arrivals", "render": "link" },
+                        { "href": '/departures', "rel": "departures", "render": "link" }
+                    ],
+                    items: [{
+                            data: [{ name: getItemName(nF), value: nF }]
+                        }]
+                }
+            };
+            return JSON.stringify(root);
         });
     }
 };
 __decorate([
     common_1.Get('/'),
     common_1.HttpCode(200),
-    common_1.Header('Content-Type', 'application/json'),
+    common_1.Header('Content-Type', 'application/vnd.collection+json'),
     __param(0, common_1.Req()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -103,17 +148,19 @@ __decorate([
 __decorate([
     common_1.Get('/departures'),
     common_1.HttpCode(200),
-    common_1.Header('Content-Type', 'application/json'),
+    common_1.Header('Content-Type', 'application/vnd.collection+json'),
+    __param(0, common_1.Req()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "departures", null);
 __decorate([
     common_1.Get('/arrivals'),
     common_1.HttpCode(200),
-    common_1.Header('Content-Type', 'application/json'),
+    common_1.Header('Content-Type', 'application/vnd.collection+json'),
+    __param(0, common_1.Req()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "arrivals", null);
 __decorate([
@@ -127,9 +174,10 @@ __decorate([
 __decorate([
     common_1.Get('/next-flight'),
     common_1.HttpCode(200),
-    common_1.Header('Content-Type', 'application/json'),
+    common_1.Header('Content-Type', 'application/vnd.collection+json'),
+    __param(0, common_1.Req()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "next", null);
 AppController = __decorate([

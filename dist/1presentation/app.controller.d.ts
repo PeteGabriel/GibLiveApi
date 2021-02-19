@@ -5,8 +5,8 @@ export declare class AppController {
     private readonly cService;
     constructor(appService: AppService, cService: Crawler);
     root(request: Request): Promise<string>;
-    departures(): Promise<string>;
-    arrivals(): Promise<string>;
+    departures(request: Request): Promise<string>;
+    arrivals(request: Request): Promise<string>;
     alive(): string;
-    next(): Promise<string>;
+    next(request: Request): Promise<string>;
 }
