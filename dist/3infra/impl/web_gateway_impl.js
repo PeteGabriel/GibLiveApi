@@ -32,16 +32,24 @@ let WebGatewayImpl = class WebGatewayImpl {
             const key = 'live_flight_info';
             yield this.cache.get(key).
                 then((cached) => __awaiter(this, void 0, void 0, function* () {
+                if (cached) {
+                    this.$ = cheerio.load(cached);
+                    return;
+                }
                 yield p({
-                    'url': 'https://www.gibraltarairport.gi/content/live-flight-info',
-                    'core': {
-                        timeout: 2000
-                    }
+                    url: 'https://www.gibraltarairport.gi/content/live-flight-info',
+                    core: {
+                        timeout: 2000,
+                    },
                 })
-                    .then(res => this.$ = cheerio.load(res.body))
+                    .then(res => {
+                    this.cache.set(key, res.body);
+                    this.$ = cheerio.load(res.body);
+                })
                     .catch(err => {
-                    if (err)
-                        throw new Error("could not connect to Gib airport gateway");
+                    if (err) {
+                        throw new Error('could not connect to Gib airport gateway');
+                    }
                 });
             }));
         });
@@ -51,8 +59,9 @@ let WebGatewayImpl = class WebGatewayImpl {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             yield this.cache.get(key)
                 .catch(err => {
-                if (err)
+                if (err) {
                     reject(err);
+                }
             })
                 .then(res => {
                 resolve(this.$(classId));

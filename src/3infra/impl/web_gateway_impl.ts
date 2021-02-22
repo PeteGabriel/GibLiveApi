@@ -3,10 +3,10 @@ import * as p from 'phin'
 import { Injectable } from '@nestjs/common';
 import { Cachable } from '../cache/cachable';
 import { Cache } from '../cache/cache';
-import { WebGateway } from './../interfaces/web_gateway';
+import { WebGateway } from '../interfaces/web_gateway';
 
 @Injectable()
-export default class WebGatewayImpl implements WebGateway{
+export default class WebGatewayImpl implements WebGateway {
   private $: CheerioStatic
   private cache: Cachable<string>
 
@@ -18,34 +18,41 @@ export default class WebGatewayImpl implements WebGateway{
     const key = 'live_flight_info'
     await this.cache.get(key).
       then(async cached => {
+        if (cached) {
+          this.$ = cheerio.load(cached)
+          return
+        }
         await p(
           {
-            'url': 'https://www.gibraltarairport.gi/content/live-flight-info',
-            'core': {
-              timeout: 2000
-            }
+            url: 'https://www.gibraltarairport.gi/content/live-flight-info',
+            core: {
+              timeout: 2000,
+            },
           })
-          .then(res => this.$ = cheerio.load(res.body))
+          .then(res => {
+            this.cache.set(key, res.body)
+            this.$ = cheerio.load(res.body)
+          })
           .catch(err => {
-            if (err)
-              throw new Error("could not connect to Gib airport gateway")
+            if (err) {
+              throw new Error('could not connect to Gib airport gateway')
+            }
           })
       })
   }
 
-  load(classId: string): Promise<Cheerio>{
+  load(classId: string): Promise<Cheerio> {
     const key = 'live_flight_key'
     return new Promise(async (resolve, reject) => {
-
       await this.cache.get(key)
         .catch(err => {
-          if (err)
+          if (err) {
             reject(err)
+          }
         })
         .then(res => {
           resolve(this.$(classId))
       })
     })
   }
-
 }

@@ -1,6 +1,6 @@
 /// <reference types="cheerio" />
 import { Cache } from '../cache/cache';
-import { WebGateway } from './../interfaces/web_gateway';
+import { WebGateway } from '../interfaces/web_gateway';
 export default class WebGatewayImpl implements WebGateway {
     private readonly c;
     private $;
