@@ -6,7 +6,7 @@ class Event {
         const date = new Date();
         date.setHours(this.parseHours(time));
         date.setMinutes(this.parseMinutes(time));
-        return date.toISOString();
+        return this.toLocalIsoString(date);
     }
     parseHours(time) {
         if (time == "" || time == undefined) {
@@ -26,10 +26,22 @@ class Event {
         const parts = time.split(':');
         let minutes = 0;
         if (parts.length > 1) {
-            minutes = Number.parseInt(parts[0]);
+            minutes = Number.parseInt(parts[1]);
         }
         return minutes;
     }
+    toLocalIsoString(date) {
+        function pad(n) { return n < 10 ? '0' + n : n; }
+        var localIsoString = date.getFullYear() + '-'
+            + pad(date.getMonth() + 1) + '-'
+            + pad(date.getDate()) + 'T'
+            + pad(date.getHours()) + ':'
+            + pad(date.getMinutes());
+        if (date.getTimezoneOffset() == 0)
+            localIsoString += 'Z';
+        return localIsoString;
+    }
+    ;
 }
 exports.Event = Event;
 //# sourceMappingURL=event.js.map

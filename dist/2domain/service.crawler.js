@@ -52,6 +52,7 @@ let Crawler = class Crawler {
                 const arrivals = new Array();
                 const date = flightDates[index];
                 tables[index].table.forEach(data => {
+                    console.debug(data);
                     let newDep = new arrival_1.Arrival({
                         time: data[0],
                         code: data[1],

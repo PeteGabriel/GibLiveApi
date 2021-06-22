@@ -20,12 +20,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var AppController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("../2domain/app.service");
 const service_crawler_1 = require("../2domain/service.crawler");
-let AppController = class AppController {
+const collection_1 = require("./collection");
+let AppController = AppController_1 = class AppController {
     constructor(appService, cService) {
         this.appService = appService;
         this.cService = cService;
@@ -118,24 +120,15 @@ let AppController = class AppController {
             if (nF == null) {
                 throw new common_1.NotFoundException("No info was found for the next flight");
             }
-            let getItemName = (flight) => flight.from != undefined ? "arrival" : "departure";
-            const root = {
-                "collection": {
-                    version: "1.0",
-                    href: request.url,
-                    links: [
-                        { "href": '/arrivals', "rel": "arrivals", "render": "link" },
-                        { "href": '/departures', "rel": "departures", "render": "link" }
-                    ],
-                    items: [{
-                            data: [{ name: getItemName(nF), value: nF }]
-                        }]
-                }
-            };
-            return JSON.stringify(root);
+            let getItemName = (flight) => flight.from != undefined ? AppController_1.ARRIVAL : AppController_1.DEPARTURE;
+            const root = buildSimpleCollection(request.url);
+            root.addItem(new collection_1.Item(new collection_1.Data(getItemName(nF), nF)));
+            return JSON.stringify({ collection: root });
         });
     }
 };
+AppController.DEPARTURE = "departure";
+AppController.ARRIVAL = "arrival";
 __decorate([
     common_1.Get('/'),
     common_1.HttpCode(200),
@@ -180,10 +173,17 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "next", null);
-AppController = __decorate([
+AppController = AppController_1 = __decorate([
     common_1.Controller('/'),
     __metadata("design:paramtypes", [app_service_1.AppService,
         service_crawler_1.Crawler])
 ], AppController);
 exports.AppController = AppController;
+function buildSimpleCollection(hrefCollection) {
+    let collection;
+    collection = new collection_1.Collection("1.0", hrefCollection);
+    collection.addLink(new collection_1.Link('/arrivals', 'arrivals', 'link'));
+    collection.addLink(new collection_1.Link('/departures', 'departures', 'link'));
+    return collection;
+}
 //# sourceMappingURL=app.controller.js.map
