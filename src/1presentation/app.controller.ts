@@ -1,17 +1,24 @@
-import { Controller, Get, HttpCode, Header, Req, Request, BadGatewayException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { Controller, Get, HttpCode, Header, Req, Res, Request, BadGatewayException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { AppService } from '../2domain/app.service';
 import { Crawler } from '../2domain/service.crawler';
 import { Departure } from '../2domain/model/departure';
 import { DailyEvent } from '../2domain/model/daily_event';
 import { Arrival } from '../2domain/model/arrival';
+import { Collection, Data, Item, Link } from './collection';
+
 
 @Controller('/')
 export class AppController {
+
+  static DEPARTURE: string = "departure"
+  static ARRIVAL: string = "arrival"
+
+
   constructor(
     private readonly appService: AppService,
     private readonly cService: Crawler,
-    ) {}
-
+  ) {}
+ 
   @Get('/')
   @HttpCode(200)
   @Header('Content-Type', 'application/vnd.collection+json')
@@ -109,8 +116,10 @@ export class AppController {
   @HttpCode(200)
   @Header('Content-Type', 'application/vnd.collection+json')
   async next(@Req() request: Request): Promise<string> {   
+
     let departures: Array<DailyEvent<Departure>> = null
     let arrivals: Array<DailyEvent<Arrival>> = null
+    
     try{
       departures = await this.cService.getDeparturesInfo();
       arrivals = await this.cService.getArrivalsInfo();
@@ -123,23 +132,30 @@ export class AppController {
       throw new NotFoundException("No info was found for the next flight")
     }
 
-    let getItemName = (flight) => flight.from != undefined ? "arrival" : "departure"
+    let getItemName = (flight) => flight.from != undefined ? AppController.ARRIVAL : AppController.DEPARTURE
 
-    const root = {
-      "collection" :
-      {
-        version : "1.0",
-        href : request.url,
-        links : [
-          {"href" : '/arrivals', "rel" : "arrivals", "render" : "link"},
-          {"href" : '/departures', "rel" : "departures", "render" : "link"}
-        ],
-        items: [{
-          data : [{ name: getItemName(nF), value: nF }]
-        }]
-      }
-    }
-
-    return JSON.stringify(root)
+    const root = buildSimpleCollection(request.url)
+    root.addItem(new Item(new Data(getItemName(nF), nF)))
+    
+    return JSON.stringify({collection: root})
   }
+}
+
+
+/**
+ * Build a response object for the next flight request.
+ * 
+ * @param hrefCollection Href parameter of collection response.
+ * @param item Content for the data parameter. In this case the next flight.
+ * @returns Object representing the next flight response.
+ */
+function buildSimpleCollection(hrefCollection: string): Collection {
+
+  let collection: Collection
+  collection = new Collection("1.0", hrefCollection)
+
+  collection.addLink(new Link('/arrivals', 'arrivals', 'link'))
+  collection.addLink(new Link('/departures', 'departures', 'link'))
+ 
+  return collection
 }

@@ -39,6 +39,7 @@ export class Crawler {
       const date = flightDates[index] //human readable date
 
       tables[index].table.forEach(data => {
+        console.debug(data)
         let newDep = new Arrival({
           time: data[0],
           code: data[1],
