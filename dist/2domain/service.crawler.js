@@ -52,7 +52,6 @@ let Crawler = class Crawler {
                 const arrivals = new Array();
                 const date = flightDates[index];
                 tables[index].table.forEach(data => {
-                    console.debug(data);
                     let newDep = new arrival_1.Arrival({
                         time: data[0],
                         code: data[1],
@@ -102,6 +101,8 @@ let Crawler = class Crawler {
             if (departures.length == 0 && arrivals.length == 0) {
                 return null;
             }
+            const arrivalsKeyword = "arrived";
+            const departuresKeyword = "on time";
             for (let i = 0; i <= (departures.length - 1); i++) {
                 let dailyArival = arrivals[i];
                 let dailyDepartures = departures[i];
@@ -111,10 +112,20 @@ let Crawler = class Crawler {
                     let comp = new event_comparator_1.EventComparator();
                     let res = comp.compare(arrivalEvent, departuresEvent);
                     if (res <= 0) {
-                        return arrivalEvent;
+                        let arrivalStatus = arrivalEvent.status.toLowerCase();
+                        if (arrivalStatus.startsWith(arrivalsKeyword)) {
+                            continue;
+                        }
+                        else
+                            return arrivalEvent;
                     }
                     else {
-                        return departuresEvent;
+                        let departureStatus = departuresEvent.status.toLowerCase();
+                        if (departureStatus.startsWith(departuresKeyword)) {
+                            continue;
+                        }
+                        else
+                            return departuresEvent;
                     }
                 }
             }
