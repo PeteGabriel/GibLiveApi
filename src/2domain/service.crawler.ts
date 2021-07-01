@@ -104,7 +104,7 @@ export class Crawler {
         return null
       }
 
-      const keyword = "scheduled"
+      const validkeys = ["scheduled", "estimated"]
       
       for(let i=0; i <= (departures.length-1); i++){
         let dailyArival = arrivals[i]
@@ -118,12 +118,12 @@ export class Crawler {
           let res = comp.compare(arrivalEvent, departuresEvent)
           if (res <= 0){
             let arrivalStatus = arrivalEvent.status.toLowerCase()
-            if (!arrivalStatus.startsWith(keyword)){
+            if (!validkeys.some((elem) => arrivalStatus.startsWith(elem))){
               continue
             }else return arrivalEvent
           }else {
             let departureStatus = departuresEvent.status.toLowerCase()
-            if (!departureStatus.startsWith(keyword)){
+            if (!validkeys.some((elem) => departureStatus.startsWith(elem))){
               continue
             }else return departuresEvent
           }
