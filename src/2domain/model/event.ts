@@ -40,7 +40,7 @@ export abstract class Event {
   }
 
 
-  protected toLocalIsoString(date) {
+  private toLocalIsoString(date) {
     function pad(n) { return n < 10 ? '0' + n : n }
     var localIsoString = date.getFullYear() + '-'
         + pad(date.getMonth() + 1) + '-'

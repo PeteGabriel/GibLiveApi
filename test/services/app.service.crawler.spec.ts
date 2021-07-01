@@ -71,13 +71,13 @@ describe('Crawler Service', () => {
     })
 
     it("should decide between flights scheduled for tomorrow if today's flights have already arrived/departed", async () => {
-      const nextFlight: Event = await svc.getNextFlight(arrivals, departures)
-      const expectedFlight = new Arrival({
-        code: "EZY6299",
-        operator: "EasyJet",
-        time: "2020-09-11T10:10:16.828Z",
-        status: "Scheduled ",
-        from: "Bristol"
+      const nextFlight: Event = await svc.getNextFlight(nextFlightArrivals, nextFlightDepartures)
+      const expectedFlight = new Departure({
+        "code": "EZY8902",
+        "operator": "EasyJet",
+        "time": "2021-02-17T20:00:00.000Z",
+        "status": "Scheduled ",
+        "to": "London Gatwick"
       })
       
       expect(nextFlight.code).toBe(expectedFlight.code)
@@ -148,7 +148,6 @@ const arrived: Array<DailyEvent<Arrival>> = [
     ]
   }
 ]
-
 
 const arrivals: Array<DailyEvent<Arrival>> = 
 [
@@ -224,6 +223,85 @@ const departures: Array<DailyEvent<Departure>> = [
         "time": "2021-02-17T12:12:59.400Z",
         "status": "Scheduled ",
         "to": "London Gatwick"
+      })
+    ]
+  }
+]
+
+const nextFlightDepartures: Array<DailyEvent<Departure>> = [
+  {
+    "date": "Friday 19th of February 2021",
+    "events": [
+      new Departure({
+        "code": "EZY8902",
+        "operator": "EasyJet",
+        "time": "2021-02-17T12:12:59.400Z",
+        "status": "Departed ",
+        "to": "London Gatwick"
+      })
+    ]
+  },
+  {
+    "date": "Saturday 20th of February 2021",
+    "events": [
+      new Departure({
+        "code": "BA493",
+        "operator": "BA",
+        "time": "2021-02-17T15:15:59.400Z",
+        "status": "Canceled ",
+        "to": "London Heathrow"
+      })
+    ]
+  },
+  {
+    "date": "Sunday 21st of February 2021",
+    "events": [
+      new Departure({
+        "code": "EZY8902",
+        "operator": "EasyJet",
+        "time": "2021-02-17T20:00:00.000Z",
+        "status": "Scheduled ",
+        "to": "London Gatwick"
+      })
+    ]
+  }
+]
+
+const nextFlightArrivals: Array<DailyEvent<Arrival>> = 
+[
+  {
+    "date": "Friday 19th of February 2021",
+    "events": [
+      new Arrival({
+        code: "EZY8901",
+        operator: "EasyJet",
+        time: "2021-02-17T11:11:50.799Z",
+        status: "Arrived ",
+        from: "London City"
+      })
+    ]
+  },
+  {
+    "date": "Saturday 20th of February 2021",
+    "events": [
+      new Arrival({
+        "code": "BA492",
+        "operator": "BA",
+        "time": "2021-02-17T14:14:50.799Z",
+        "status": "Diverted ",
+        "from": "Birmingham"
+      })
+    ]
+  },
+  {
+    "date": "Sunday 21st of February 2021",
+    "events": [
+      new Arrival({
+        "code": "EZY8901",
+        "operator": "EasyJet",
+        "time": "2021-02-17T20:11:50.799Z",
+        "status": "Scheduled ",
+        "from": "London Gatwick"
       })
     ]
   }

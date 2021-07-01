@@ -14,7 +14,7 @@ describe('Event creation', () => {
             status: 'Scheduled ',
         })
 
-        expect(departure.time).toEqual("2021-06-22T17:10")
+        expect(departure.time).toContain("17:10")
     })
 
 })
