@@ -8,5 +8,5 @@ export declare abstract class Event {
     protected formatTime(time: string): string;
     private parseHours;
     private parseMinutes;
-    protected toLocalIsoString(date: any): string;
+    private toLocalIsoString;
 }
