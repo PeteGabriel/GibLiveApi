@@ -6,7 +6,7 @@ export class Arrival extends Event{
     super()
     this.code = params.code;
     this.operator = params.operator;
-    this.time = this.formatTime(params.time);
+    this.time = params.time;
     this.status = params.status;
     this.from = params.from;
   }

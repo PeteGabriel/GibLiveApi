@@ -5,8 +5,4 @@ export declare abstract class Event {
     status: string;
     from: string;
     to: string;
-    protected formatTime(time: string): string;
-    private parseHours;
-    private parseMinutes;
-    private toLocalIsoString;
 }
