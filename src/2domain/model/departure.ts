@@ -7,7 +7,9 @@ export class Departure extends Event{
     this.code = params.code;
     this.operator = params.operator;
     this.time = params.time
-    this.status = params.status;
+    this.status = params.status.toLowerCase();
     this.to = params.to;
+    this.date = ""
   }
+
 }
