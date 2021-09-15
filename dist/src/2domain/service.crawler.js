@@ -111,7 +111,7 @@ let Crawler = class Crawler {
                     let comp = new event_comparator_1.EventComparator();
                     let res = comp.compare(arrivalEvent, departuresEvent);
                     if (res <= 0) {
-                        let arrivalStatus = arrivalEvent.getStatus().toLowerCase();
+                        let arrivalStatus = arrivalEvent.status.toLowerCase();
                         if (!validkeys.some((elem) => arrivalStatus.startsWith(elem))) {
                             continue;
                         }
@@ -119,7 +119,7 @@ let Crawler = class Crawler {
                             return arrivalEvent;
                     }
                     else {
-                        let departureStatus = departuresEvent.getStatus().toLowerCase();
+                        let departureStatus = departuresEvent.status.toLowerCase();
                         if (!validkeys.some((elem) => departureStatus.startsWith(elem))) {
                             continue;
                         }

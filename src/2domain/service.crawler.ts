@@ -117,12 +117,12 @@ export class Crawler {
           let comp = new EventComparator();
           let res = comp.compare(arrivalEvent, departuresEvent)
           if (res <= 0){
-            let arrivalStatus = arrivalEvent.status.toLowerCase()
+            let arrivalStatus = arrivalEvent.getStatus().toLowerCase()
             if (!validkeys.some((elem) => arrivalStatus.startsWith(elem))){
               continue
             }else return arrivalEvent
           }else {
-            let departureStatus = departuresEvent.status.toLowerCase()
+            let departureStatus = departuresEvent.getStatus().toLowerCase()
             if (!validkeys.some((elem) => departureStatus.startsWith(elem))){
               continue
             }else return departuresEvent
