@@ -104,15 +104,15 @@ export class Crawler {
         return null
       }
 
-      const validkeys = ["scheduled", "estimated"]
+      const validkeys = ["scheduled", "estimated", "on time"]
       
       for(let i=0; i <= (departures.length-1); i++){
-        let dailyArival = arrivals[i]
-        let dailyDepartures = departures[i]
+        let dailyArivalEvent = arrivals[i]
+        let dailyDeparturesEvent = departures[i]
 
-        for(let j=0; j<= (dailyDepartures.events.length-1); j++){
-          let arrivalEvent = dailyArival.events[j]
-          let departuresEvent = dailyDepartures.events[j]
+        for(let j=0; j<= (dailyDeparturesEvent.events.length-1); j++){
+          let arrivalEvent = dailyArivalEvent.events[j]
+          let departuresEvent = dailyDeparturesEvent.events[j]
 
           let comp = new EventComparator();
           let res = comp.compare(arrivalEvent, departuresEvent)
@@ -120,12 +120,18 @@ export class Crawler {
             let arrivalStatus = arrivalEvent.status.toLowerCase()
             if (!validkeys.some((elem) => arrivalStatus.startsWith(elem))){
               continue
-            }else return arrivalEvent
+            }else {
+              arrivalEvent.date = dailyArivalEvent.date
+              return arrivalEvent
+            }
           }else {
             let departureStatus = departuresEvent.status.toLowerCase()
             if (!validkeys.some((elem) => departureStatus.startsWith(elem))){
               continue
-            }else return departuresEvent
+            }else {
+              departuresEvent.date = dailyDeparturesEvent.date
+              return departuresEvent
+            }
           }
         }
       }
