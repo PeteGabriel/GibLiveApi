@@ -1,22 +1,10 @@
 export abstract class Event {
-  protected code: string;
-  protected operator: string;
-  protected date: string;
-  protected time: string;
-  protected status: string;
-  protected from: string;
-  protected to: string;
+  public code: string;
+  public operator: string;
+  public date: string;
+  public time: string;
+  public status: string;
+  public from: string;
+  public to: string;
 
-
-  setDate(date: string): void {
-    this.date = date
-  }
-
-  getStatus(): string {
-    return this.status
-  }
-
-  getTime(): string {
-    return this.time
-  }
 }

@@ -7,13 +7,15 @@ describe('EventComparator interface implementation', () => {
 
   it('should decide correctly when an arrival happens first', () => {
 
-    let a: Arrival = new Arrival({});
-    a.time = "2020-09-09T11:11:29.446Z"
-    a.status = ""
+    let a: Arrival = new Arrival({
+      time: "2020-09-09T11:11:29.446Z",
+      status: ""
+    });
     
-    let d: Departure = new Departure({})
-    d.time= "2020-09-09T15:15:03.515Z"
-    d.status = ""
+    let d: Departure = new Departure({
+      time: "2020-09-09T15:15:03.515Z",
+      status: ""
+    })
 
     let comp: Comparator<Arrival, Departure> = new EventComparator()
     let res = comp.compare(a, d)
@@ -22,13 +24,16 @@ describe('EventComparator interface implementation', () => {
 
   it('should decide correctly when a departure happens first', () => {
 
-    let a: Arrival = new Arrival({});
-    a.time = "2020-09-09T15:15:03.515Z"
-    a.status = ""
+    let a: Arrival = new Arrival({
+      time: "2020-09-09T15:15:03.515Z",
+      status: ""
+    });
     
-    let d: Departure = new Departure({})
-    d.time= "2020-09-09T11:11:29.446Z"
-    d.status = ""
+    
+    let d: Departure = new Departure({
+      time: "2020-09-09T11:11:29.446Z",
+      status: ""
+    })
     
     let comp: Comparator<Arrival, Departure> = new EventComparator()
     let res = comp.compare(a, d)
@@ -37,13 +42,16 @@ describe('EventComparator interface implementation', () => {
 
   it('should decide correctly when both are equal', () => {
 
-    let a: Arrival = new Arrival({});
-    a.time = "2020-09-09T15:15:03.515Z"
-    a.status = ""
+    let a: Arrival = new Arrival({
+      time: "2020-09-09T15:15:03.515Z",
+      status: ""
+    });
     
-    let d: Departure = new Departure({})
-    d.time= "2020-09-09T15:15:03.515Z"
-    d.status = ""
+    let d: Departure = new Departure({
+      time: "2020-09-09T15:15:03.515Z",
+      status: ""
+    })
+    
 
     let comp: Comparator<Arrival, Departure> = new EventComparator()
     let res = comp.compare(a, d)

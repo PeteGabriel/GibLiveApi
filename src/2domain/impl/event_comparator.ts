@@ -5,15 +5,15 @@ import { Departure } from "../model/departure";
 export class EventComparator implements Comparator<Arrival, Departure> {
   
   compare(a: Arrival, d: Departure): number {
-    let aa = new Date(a.getTime())
-    let dd = new Date(d.getTime())
+    let aa = new Date(a.time)
+    let dd = new Date(d.time)
     if (aa > dd) {
-      if (a.getStatus().includes("Arrived")){
+      if (a.status.includes("Arrived")){
         return -1
       }
       return 1
     }else if (aa < dd){
-      if (d.getStatus().includes("Departed")){
+      if (d.status.includes("Departed")){
         return 1
       }
       return -1
