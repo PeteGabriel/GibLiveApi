@@ -22,7 +22,7 @@
     "postinstall": "tsc"
   },
   "dependencies": {
-    "@nestjs/common": "^7.6.12",
+    "@nestjs/common": "^9.2.1",
     "@nestjs/core": "^7.4.4",
     "@nestjs/platform-express": "^9.2.1",
     "@types/cheerio": "^0.22.11",
