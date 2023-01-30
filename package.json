@@ -22,12 +22,12 @@
     "postinstall": "tsc"
   },
   "dependencies": {
-    "@nestjs/common": "^7.6.12",
+    "@nestjs/common": "^9.2.1",
     "@nestjs/core": "^7.4.4",
     "@nestjs/platform-express": "^9.2.1",
     "@types/cheerio": "^0.22.11",
     "@types/phin": "^3.3.0",
-    "cheerio": "^1.0.0-rc.3",
+    "cheerio": "^1.0.0-rc.12",
     "node-cache-promise": "^1.0.0",
     "phin": "^3.4.0",
     "reflect-metadata": "^0.1.12",
